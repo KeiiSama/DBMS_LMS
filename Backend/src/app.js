@@ -39,7 +39,7 @@ const adminAuthRoutes = require("./routes/adminAuth.router");
 const bookRoutes = require("./routes/book.router");
 
 const app = express();
-const port = 3001;
+const port = 8081;
 
 app.use(cors());
 app.use(express.json());

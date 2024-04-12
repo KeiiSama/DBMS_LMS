@@ -16,10 +16,10 @@ const mysql = require("mysql");
 
 const pool = mysql.createConnection({
   host: "localhost",
-  user: "root",
+  user: "dbms",
   database: "library",
 
-  password: "Ngocquynguyen1",
+  password: "",
 });
 
 pool.connect((err) => {
