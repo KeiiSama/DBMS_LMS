@@ -36,7 +36,7 @@ const express = require("express");
 const cors = require("cors");
 const authRoutes = require("./routes/auth.router");
 const adminAuthRoutes = require("./routes/adminAuth.router");
-// const bookRoutes = require("./routes/bookRoutes");
+const bookRoutes = require("./routes/book.router");
 
 const app = express();
 const port = 3001;
@@ -46,7 +46,7 @@ app.use(express.json());
 
 app.use("/api", authRoutes);
 app.use("/api", adminAuthRoutes);
-// app.use("/api", bookRoutes);
+app.use("/api", bookRoutes);
 
 app.listen(port, () => {
   console.log(`Server đang lắng nghe tại http://localhost:${port}`);
