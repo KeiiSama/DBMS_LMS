@@ -2,7 +2,8 @@ const db = require("../loaders/db");
 
 exports.signupAdmin = (username, password, hovaten, callback) => {
   console.log("add");
-  const sql = "CALL InsertTaiKhoan(?, ?, ?,'admin')";
+  const sql =
+    "CALL InsertTaiKhoan(?, ?, ?,'2000-01-01','admin','DAI HỌC BK TPHCM','09999999999')";
   db.query(sql, [username, password, hovaten], callback);
 };
 

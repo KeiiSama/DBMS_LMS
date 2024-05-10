@@ -21,7 +21,7 @@ MaSoNhaQuanLy varchar(8) ,
 primary key (MaSoNhaQuanLy),
 FOREIGN KEY (MaSoNhaQuanLy) REFERENCES TaiKhoan(MaSoTaiKhoan)
 );
-
+-----
 create table DonMuonSach(
 MaDonMuon varchar(8) primary key, -- DM0001
 NgayTaoDon date not null,
@@ -205,8 +205,9 @@ END;
 //
 DELIMITER ;
 
-DELIMITER //                
+
 CALL deleteSach('S001');
+
 //
 DELIMITER ;
 
@@ -311,10 +312,8 @@ BEGIN
 END;
 //
 DELIMITER ;
-
 drop TRIGGER updatesoluongSach
 drop TRIGGER updatesoluongSach_saukhiupdatesoluongcungcap
-
 DELIMITER //
 CREATE TRIGGER updatesoluongSach_saukhiupdatesoluongcungcap
 BEFORE update on sach

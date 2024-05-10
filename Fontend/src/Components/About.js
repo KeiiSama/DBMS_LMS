@@ -7,16 +7,14 @@ const About = () => {
     <>
       <div className="container-fluid">
         <div className="row d-flex justify-content-center">
-          <div className="col-lg-8  my-2 p-2">
-            <h2 className="text-bold">
-              Driving the force of
-              <span className="text-danger">assortement</span>
-            </h2>
+          <div className="col-lg-8  my-2 p-2" style={{ fontStyle: "italic" }}>
+            <h2 className="text-bold">Chúng tôi là ai ?</h2>
             <p className="text-wrap">
-              For pver a decades now,we have been empowering our customers in
-              discovering new tastes and experiences across countries.By putting
-              together meticulous information for our cutsomers,we enable them
-              to make an informed choice
+              Chúng tôi là nhóm người đứng sau dự án BK Book, bao gồm các nhà
+              phát triển web, nhà thiết kế đồ họa, chuyên gia về dữ liệu và một
+              nhóm người đam mê về việc cung cấp nguồn tài nguyên học thuật cho
+              cộng đồng. Đội ngũ này bao gồm sinh viên những người đam mê giáo
+              dục và chia sẻ kiến thức.
             </p>
           </div>
         </div>
@@ -24,27 +22,26 @@ const About = () => {
 
       <div className="container-fluid">
         <div className="row d-flex justify-content-center">
-          <div className="col-lg-4 p-2">
-            <h1>Who are we ?</h1>
+          <div className="col-lg-4 p-2" style={{ fontStyle: "italic" }}>
+            <h1>Sứ mệnh của chúng tôi</h1>
             <p>
-              Launched in 2010, Our technology platform connects customers,
-              restaurant partners and delivery partners, serving their multiple
-              needs. Customers use our platform to search and discover
-              restaurants, read and write customer generated reviews and view
-              and upload photos, order food delivery, book a table and make
-              payments while dining-out at restaurants. On the other hand, we
-              provide restaurant partners with industry-specific marketing tools
-              which enable them to engage and acquire customers to grow their
-              business while also providing a reliable and efficient last mile
-              delivery service. We also operate a one-stop procurement solution,
-              Hyperpure, which supplies high quality ingredients and kitchen
-              products to restaurant partners. We also provide our delivery
-              partners with transparent and flexible earning opportunities.
+              Chúng tôi cam kết tạo ra một nền tảng thư viện trực tuyến đồng văn
+              hóa và tiện lợi, nơi mọi người có thể dễ dàng truy cập vào các tài
+              liệu giáo trình, sách tham khảo và văn phòng phẩm liên quan đến
+              học tập và nghiên cứu. Chúng tôi tôn trọng và khuyến khích sự chia
+              sẻ và hợp tác, tạo điều kiện cho mọi người cùng nhau khám phá và
+              học hỏi. Sứ mệnh của chúng tôi là cung cấp một nguồn tài nguyên
+              phong phú và đa dạng, góp phần nâng cao kiến thức và năng lực của
+              cộng đồng trong lĩnh vực học thuật và chuyên môn.
             </p>
           </div>
 
           <div className="col-lg-4 zomatoImage">
-            <img src={zomato} />
+            <img
+              src={
+                "https://assets-global.website-files.com/604a97c70aee09eed25ce991/61897a35583a9b51db018d3e_MartinPublicSeating-97560-Importance-School-Library-blogbanner1.jpg"
+              }
+            />
           </div>
         </div>
       </div>

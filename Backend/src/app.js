@@ -37,17 +37,48 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth.router");
 const adminAuthRoutes = require("./routes/adminAuth.router");
 const bookRoutes = require("./routes/book.router");
+const userRouter = require("./routes/user.router");
+const allRouter = require("./routes");
 
-const app = express();
-const port = 8081;
+const startServer = () => {
+    const app = express();
+    const port = 3001;
+    app.use(cors());
+    app.use(express.json());
+    try {
+        app.use("/api", authRoutes);
+        app.use("/api", adminAuthRoutes);
+        // app.use("/api/books", bookRoutes);
+        // app.use("/api/users", userRouter);
+        app.use("/api", allRouter)
 
-app.use(cors());
-app.use(express.json());
+        app._router.all(
+            "*",
+            (req, res, next) => {
+                res.status(404).send({
+                    message: "API NOT FOUND"
+                });
+            }
+        );
+        app.use((err, req, res, next) =>
+        // errorHandler(err, req, res, next)
+        {
+            console.log(err)
+            res.status(500).send({
+                message: "Intenal Server Error"
+            })
+        }
+        );
 
-app.use("/api", authRoutes);
-app.use("/api", adminAuthRoutes);
-app.use("/api", bookRoutes);
 
-app.listen(port, () => {
-  console.log(`Server đang lắng nghe tại http://localhost:${port}`);
-});
+        app.listen(port, () => {
+            console.log(`Server đang lắng nghe tại http://localhost:${port}`);
+        });
+
+    } catch (error) {
+        console.log("Start server faild!")
+        console.log(error)
+    }
+}
+
+startServer();

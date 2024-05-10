@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import FoodLogo from "./Images/FoodNetwrok.png";
+import FoodLogo from "./Images/logo.png";
 import { FaCartShopping } from "react-icons/fa6";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { FaDeleteLeft } from "react-icons/fa6";
@@ -38,13 +38,13 @@ const Navbar = () => {
           <div className="col-lg-7 col-7 Navbar-right">
             <ul className="d-flex justify-content-around align-items-center">
               <li className="my-3">
-                <NavLink to="/">Home</NavLink>
+                <NavLink to="/">Trang chủ</NavLink>
               </li>
               <li className="my-3">
-                <NavLink to="/About">About us</NavLink>
+                <NavLink to="/About">Về chúng tôi</NavLink>
               </li>
               <li className="my-3">
-                <NavLink to="/OurFood">Our Food</NavLink>
+                <NavLink to="/OurBook">Sách</NavLink>
               </li>
 
               {isAuthenticated ? (
@@ -58,14 +58,14 @@ const Navbar = () => {
                   className="btn btn-dark mt-1 loginBtn rounded-pill ps-2"
                   onClick={() => onClicklogin2()}
                 >
-                  LOGOUT
+                  Đăng xuất
                 </button>
               ) : (
                 <button
                   className="btn btn-dark mt-1 loginBtn rounded-pill ps-2"
                   onClick={() => onClicklogin()}
                 >
-                  LOGIN
+                  Đăng nhập
                 </button>
               )}
 

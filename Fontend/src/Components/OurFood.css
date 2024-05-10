@@ -1,8 +1,44 @@
-.ourImg{
-    width: 100%;
-    border-radius: 1rem;
+.ourImg {
+  width: 100%;
+  border-radius: 1rem;
 }
 
-.ourfood{
-    border-radius: 1rem;
+.ourfood {
+  border-radius: 1rem;
+}
+.outbook_detail_mota {
+  text-align: justify;
+}
+.detail_mota_font {
+  font-weight: normal;
+}
+.review-section {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.review-title {
+  color: #333;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.review-item {
+  margin-bottom: 20px;
+}
+
+.reviewer-name {
+  color: #666;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.review-item p {
+  margin: 5px 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
 }

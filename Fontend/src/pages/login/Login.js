@@ -45,7 +45,10 @@ function LoginForm() {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("isAdmin", isAdmin ? "true" : "false");
         toast.success("Đăng nhập thành công.");
-        navigate("/");
+        if (isAdmin) {
+          navigate("/admin/books");
+        } else {
+        }
       }
     } catch (error) {
       console.error("Đã có lỗi xảy ra", error);
