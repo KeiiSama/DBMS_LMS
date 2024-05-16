@@ -32,7 +32,7 @@ class BorrowRequestModel {
         JOIN TaiKhoan ON DonMuonSach.MaSoDocGia = TaiKhoan.MaSoTaiKhoan 
         JOIN sachmuon ON DonMuonSach.MaDonMuon = sachmuon.MaDonMuonSach 
         JOIN sach ON sachmuon.MaSoSach = sach.MaSoSach
-        ${whereClause }
+        ${ whereClause }
         GROUP BY 
             DonMuonSach.MaDonMuon, 
             DonMuonSach.TrangThai, 
@@ -40,14 +40,14 @@ class BorrowRequestModel {
             DonMuonSach.NgayTraSach, 
             DonMuonSach.Gia, 
             TaiKhoan.HoVaTen 
-        ${sortClause} ${paginateClause} 
-    `   
+        ${sortClause} ${paginateClause}  `   
         const params = [...options.filter.params, options.paginate.limit, options.paginate.offset]
         console.log(sql, params)
         pool.query(sql, params, (error, result) => {
+            console.log(result)
             if (result) {
                 callback(error, {
-                    data: result.map(item => ({...item, SachMuon: JSON.parse(item.SachMuon)})),
+                    data: result.map(item => ({...item, SachMuon: item.SachMuon})),
                     total: result.length > 0 ? result[0].totalCount : 0,
                     sortBy: options.sort.by,
                     order: options.sort.order === "ASC" ? "ascend" : "descend",

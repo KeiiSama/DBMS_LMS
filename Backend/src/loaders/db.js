@@ -12,7 +12,7 @@ const dbConfig = {
 // const pool = mysql.createPool(dbConfig);
 
 // module.exports = pool;
-const mysql = require("mysql");
+const mysql = require("mysql2");
 
 const pool = mysql.createConnection(dbConfig);
 
