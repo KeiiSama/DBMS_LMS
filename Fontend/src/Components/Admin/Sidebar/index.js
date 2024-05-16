@@ -27,14 +27,6 @@ function Sidebar() {
           }}
           items={[
             {
-              title: "Dashboard",
-              itemId: "/dashboard",
-
-              elemBefore: () => (
-                <AiOutlineHome color="var(--primary)" size={24} />
-              ),
-            },
-            {
               title: "Quản lý sách",
               itemId: "/admin/books",
               // you can use your own custom Icon component as well
@@ -47,16 +39,6 @@ function Sidebar() {
             {
               title: "Quản lý đơn mượn sách",
               itemId: '/admin/borrow-requests',
-              // you can use your own custom Icon component as well
-              // icon is optional
-              elemBefore: () => (
-                <TbDeviceDesktop color="var(--primary)" size={24} />
-              ),
-            },
-
-            {
-              title: "Quản lý bình luận",
-              itemId: "/admin/comments",
               // you can use your own custom Icon component as well
               // icon is optional
               elemBefore: () => (

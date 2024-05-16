@@ -26,18 +26,18 @@ function App() {
   const isNotAdminRoute = (path) => {
     return !adminRoutes.some((route) => route.path === path);
   };
-
+  
   return (
     <>
       <BrowserRouter>
         <AuthProvider>
-          {isNotAdminRoute(window.location.pathname) && <Navbar />}
+          {/* {isNotAdminRoute(window.location.pathname) && <Navbar />} */}
           <Routes>
-            <Route path="/Register" element={<Register />} />
+            {/* <Route path="/Register" element={<Register />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/" element={<Home />} />
             <Route path="/OurBook" element={<MainFood />} />
-            <Route path="/About" element={<About />} />
+            <Route path="/About" element={<About />} /> */}
             {[...adminRoutes, ...customerRoutes].map((item, index) => {
               let Page = item.component;
               let Layout = Fragment;

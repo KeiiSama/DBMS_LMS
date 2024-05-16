@@ -4,19 +4,50 @@ const pool = require('../loaders/db')
 class BorrowRequestModel {
     allowFields = ["MaDonMuon", "NgayTaoDon", "NgayQuyetDinh", "TrangThai", "NgayTraSach", "Gia"]
     getAll = (requestQuery = {}, callback) => {
-        const options = parseRequestQueries(requestQuery, this.allowFields)
+        const options = parseRequestQueries(requestQuery, this.allowFields, "DonMuonSach")
         console.log(requestQuery, options)
         const whereClause = options.filter.placeholders.length > 0 ? " WHERE " + options.filter.placeholders.join("AND") : ""
-        const sortClause = ` ORDER BY ${options.sort.by} ${options.sort.order === "ASC" ? "ASC" : "DESC"} `
+        const sortClause = ` ORDER BY DonMuonSach.${options.sort.by} ${options.sort.order === "ASC" ? "ASC" : "DESC"} `
         const paginateClause = " LIMIT ? OFFSET ?"
 
-        const sql = 'SELECT *, COUNT(*) OVER() as totalCount FROM DonMuonSach ' + whereClause + sortClause + paginateClause
+        const sql = `
+        SELECT 
+            DonMuonSach.MaDonMuon,
+            DonMuonSach.TrangThai,
+            DonMuonSach.NgayTaoDon AS NgayMuon,
+            DonMuonSach.NgayTraSach AS NgayTra,
+            DonMuonSach.NgayQuyetDinh AS NgayCapNhat,
+            DonMuonSach.MaSoDocGia AS MaSoDocGia,
+            DonMuonSach.Gia,
+            TaiKhoan.HoVaTen AS TenNguoiMuon,
+            JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'MaSoSach', sach.MaSoSach,
+                    'TenSach', sach.TenSach,
+                    'TacGia', sach.TacGia,
+                    'SoLuong', sachmuon.SoLuong
+                )
+            ) AS SachMuon
+        FROM DonMuonSach 
+        JOIN TaiKhoan ON DonMuonSach.MaSoDocGia = TaiKhoan.MaSoTaiKhoan 
+        JOIN sachmuon ON DonMuonSach.MaDonMuon = sachmuon.MaDonMuonSach 
+        JOIN sach ON sachmuon.MaSoSach = sach.MaSoSach
+        ${whereClause }
+        GROUP BY 
+            DonMuonSach.MaDonMuon, 
+            DonMuonSach.TrangThai, 
+            DonMuonSach.NgayTaoDon, 
+            DonMuonSach.NgayTraSach, 
+            DonMuonSach.Gia, 
+            TaiKhoan.HoVaTen 
+        ${sortClause} ${paginateClause} 
+    `   
         const params = [...options.filter.params, options.paginate.limit, options.paginate.offset]
         console.log(sql, params)
         pool.query(sql, params, (error, result) => {
             if (result) {
                 callback(error, {
-                    data: result,
+                    data: result.map(item => ({...item, SachMuon: JSON.parse(item.SachMuon)})),
                     total: result.length > 0 ? result[0].totalCount : 0,
                     sortBy: options.sort.by,
                     order: options.sort.order === "ASC" ? "ascend" : "descend",
@@ -25,7 +56,7 @@ class BorrowRequestModel {
                 })
 
             } else {
-                callback(error, result)
+                callback(error, JSON.parse(result))
             }
         })
     }
@@ -38,36 +69,48 @@ class BorrowRequestModel {
         pool.query(query, params, callback)
     }
 
-    // Update with all field is required
-    update(book, callback) {
-        const { MaSoSach, TenSach, TacGia, NhaPhatHanh, SoLuong, TrangThai, TenDanhMuc, Mota } = book
-        const query = "CALL updateSach(?,?,?,?,?,?,?)"
-        const params = [MaSoSach, TenSach, TacGia, NhaPhatHanh, SoLuong, TrangThai, TenDanhMuc]
-        pool.query(query, params, callback)
-    }
+   reject(MaDonMuon, callback) {
+        const  sql = `
+            Update DonMuonSach 
+            Set TrangThai =  "TuChoi", NgayQuyetDinh = ? 
+            WHERE MaDonMuon  = ?`
 
-    // Can update spcific field
-    update(MaSoSach, book, callback) {
-        const  updateColumns = []
-        const updateValues = [] 
-        for (let key in book) {
-            if (book[key] !== undefined && this.allowFields.includes(key) && key !== "MaSoSach") {
-                updateColumns.push(` ${key}=? `)
-                updateValues.push(book[key]) 
-            } 
-        }
+        const params = [new Date(), MaDonMuon]
 
-        const query = "UPDATE sach " + (updateColumns.length > 0 ? `SET ${updateColumns.join(",")}`: "") + " WHERE MaSoSach = ?"
-        const params = [...updateValues, MaSoSach]
-        console.log(query, params)
-        pool.query(query, params, callback)
-    }
+        pool.query(sql, params,  (error, result) => {
+            if (result) {
+                callback(error, {
+                        ...result, 
+                        status: "TuChoi"
+                })
+            } else {
+                callback(error, result)
+            }
 
-    // delete(id, callback) {
-    //     const query = "CALL deleteSach(?)"
-    //     const params = [id]
-    //     pool.query(query, params, callback)
-    // }
+        })
+   }
+
+   accept(MaDonMuon,  callback) {
+        const  sql = `
+            Update DonMuonSach 
+            Set 
+                TrangThai =  "ChapNhan",
+                NgayQuyetDinh = ? 
+            WHERE MaDonMuon  = ?`
+
+        const params = [new Date(), MaDonMuon]
+
+        pool.query(sql, params,  (error, result) => {
+            if (result) {
+                callback(error, {
+                        ...result, 
+                        status: "ChapNhan"
+                })
+            } else {
+                callback(error, result)
+            }
+        })
+   }
 }
 
 module.exports = BorrowRequestModel ;

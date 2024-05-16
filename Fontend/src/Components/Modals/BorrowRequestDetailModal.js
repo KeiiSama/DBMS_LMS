@@ -1,9 +1,10 @@
-import { Button, Checkbox, Form, Input, InputNumber, Modal, Select, Space } from "antd";
+import { Button, Checkbox, Form, Input, InputNumber, Modal, Select, Space, Tooltip } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { BsEye } from "react-icons/bs";
 import { toast } from "react-toastify";
 
-export const CreateBorrowRequestModal = ({ listBook, ...props }) => {
+export const BorrowRequestDetailsModal = ({ ...props }) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false)
 
@@ -29,38 +30,30 @@ export const CreateBorrowRequestModal = ({ listBook, ...props }) => {
         setOpen(true);
     };
 
-    const handleOk = async () => {
-        setLoading(true)
-        try {
-            await props.onConfirm()
-            setLoading(false)
-            setOpen(false);
-        } catch (error) {
-            console.log(error)
-            setLoading(false)
+    // const handleOk = async () => {
+    //     setLoading(true)
+    //     try {
+    //         await props.onConfirm()
+    //         setLoading(false)
+    //         setOpen(false);
+    //     } catch (error) {
+    //         console.log(error)
+    //         setLoading(false)
 
-            toast.error("Đã xảy ra lỗi!")
-        }
-    };
+    //         toast.error("Đã xảy ra lỗi!")
+    //     }
+    // };
 
     const handleCancel = () => {
         setOpen(false);
     };
 
-    const handleShowModal = () => {
-        const form = props.form 
-        const date = props.NgayTra
+    // const handleShowModal = () => {
+    //     const form = props.form 
+    //     const date = props.NgayTra
 
-        if (!date) {
-            form.setFields([{name: "NgayTraSach", errors: ["Vui lòng chọn ngày trả sách"]}])
-            return ;
-        } else if (new Date(date) <= new Date()) {
-            form.setFields([{name: "NgayTraSach", errors: ["Ngày không hợp lệ"]}])
-        } else {
-            form.setFields([{name: "NgayTraSach", errors: []}])
-            showModal()
-        }
-    }
+       
+    // }
 
 
     let soNgayMuon = 0
@@ -73,23 +66,36 @@ export const CreateBorrowRequestModal = ({ listBook, ...props }) => {
 
     return (
         <>
-            <Button type="primary" onClick={handleShowModal}>Yêu cầu mượn Sách</Button>
+            <Tooltip title="Xem chi  tiết"><Button onClick={showModal} icon={<BsEye />} size="small" /></Tooltip>
             <Modal
                 style={{ ...modalStyles }}
                 destroyOnClose={true}
                 title="Thông tin yêu cầu mượn sách"
                 open={open}
-                onOk={handleOk}
-                okType="primary"
-                okButtonProps={{ className: "bg-primary" }}
-                cancelText="Cancel"
+                // onOk={handleOk}
                 onCancel={handleCancel}
-                // footer={null}
+                footer={null}
                 width={800}
                 maskClosable={false}
             >
+
                 <div className='container my-4'>
-                    <div className="row border">
+                    <div className="row">
+                        <h6>Người yêu cầu: </h6>
+                        <div className="ms-3">
+                            <div>
+                                <span>Họ và tên: </span>
+                                <span>{props.borrowRequest.TenNguoiMuon}</span>
+                            </div>
+
+                            <div>
+                                <span>Mã tài khoản: </span>
+                                <span>{props.borrowRequest.MaSoDocGia}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h6 className="mt-2">Thông tin sách mượn: </h6>
+                    <div className="row border ms-3">
                         <div className="col-6">
                             <p>Tên Sách</p>
                         </div>
@@ -99,8 +105,8 @@ export const CreateBorrowRequestModal = ({ listBook, ...props }) => {
                         </div>
                     </div>
                     {
-                        listBook.map((item, index) => (
-                            <div className="row border">
+                        props.borrowRequest.SachMuon.map((item, index) => (
+                            <div className="row border ms-3">
                                 <div className="col-6">
                                     <p>{item.TenSach}</p>
                                 </div>
@@ -116,29 +122,22 @@ export const CreateBorrowRequestModal = ({ listBook, ...props }) => {
                 <div className="d-flex flex-wrap">
                     <div className="w-50">
                         <span className="me-3">Tổng số lượng: </span>
-                        <b>{props.total}</b> 
+                        <b>{10}</b> 
                     </div>
 
                     <div className="w-50">
                         <span className="me-3">Ngày trả: </span>                        
-                        {props.NgayTra && <b>{moment(props.NgayTra).format("YYYY-MM-DD")}</b>}
+                        {<b>{props.borrowRequest.NgayTra  ? moment(props.borrowRequest.NgayTra).format("yyyy-MM-DD"): "Unknown"}</b>}
                     </div>
 
                     <div className="w-50">
                         <span className="me-3">Số ngày mượn: </span>                        
-                        <b>{soNgayMuon}</b>
+                        <b>{10}</b>
                     </div>
 
                     <div className="w-50">
                         <span>Phí: </span>
-                        <b>{new Intl.NumberFormat().format(cost)} Vnđ</b>
-                    </div>
-                   
-                    <div className="mt-3">
-                        <Form.Item name="isAgree" labelAlign="right" label="Đồng ý với điều khoản và chính sách dịch vụ của thư viện">
-                            <Checkbox/>
-                            {/* <span className="ms-3">Đồng ý với điều khoản và chính sách dịch vụ của thư viện</span> */}
-                        </Form.Item>
+                        <b>{new Intl.NumberFormat().format(props.borrowRequest.Gia)} Vnđ</b>
                     </div>
                 </div>
 

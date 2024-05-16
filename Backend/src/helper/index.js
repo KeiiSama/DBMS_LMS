@@ -1,6 +1,6 @@
 
 const allowedOperator = ["gt", "gte", "lt", "lte", "startsWith", "endsWith", "contains", "between", "in"]
-function parseRequestQueries(query, allowedFilterFields = []) {
+function parseRequestQueries(query, allowedFilterFields = [], record_alias = '') {
     const { page, pageSize, sortBy, order, searchKey, ...filterOptions } = query;
     const result = {
         paginate: {},
@@ -28,53 +28,54 @@ function parseRequestQueries(query, allowedFilterFields = []) {
     for (let key in filterOptions) {
         const conditions = key.split("_")    
         if (conditions.length === 1 && allowedFilterFields.includes(key) && filterOptions[key] !== "") {
-            placeholders.push(` (${key} = ?) `)
+            placeholders.push(` (${record_alias ? `${record_alias}.${key}` :  key} = ?) `)
             params.push(filterOptions[key])
         } else if (conditions.length === 2) {
             const [field,op] = conditions ;
+            const fieldStr =   record_alias ? `${record_alias}.${field}` : field
             if (allowedFilterFields.includes(field) && allowedOperator.includes(op)) {
                 switch (op) {
                     case "lt":
                         params.push(filterOptions[key])
-                        placeholders.push(` (${field} < ?) `)
+                        placeholders.push(` (${fieldStr} < ?) `)
                         break;
                     case "lte":
                         params.push(filterOptions[key])
-                        placeholders.push(` (${field} <= ?) `)
+                        placeholders.push(` (${fieldStr} <= ?) `)
                         break;
                     case "gt":
                         params.push(filterOptions[key])
-                        placeholders.push(` (${field} > ?) `)
+                        placeholders.push(` (${fieldStr} > ?) `)
                         break;
                     case "gte":
                         params.push(filterOptions[key])
-                        placeholders.push(` (${field} >= ?) `)
+                        placeholders.push(` (${fieldStr} >= ?) `)
                         break;
                     case "eq":
                         params.push(filterOptions[key])
-                        placeholders.push(` (${field} = ?) `)
+                        placeholders.push(` (${fieldStr} = ?) `)
                         break;
                     case "neq":
                         params.push(filterOptions[key])
-                        placeholders.push(` (${field} <> ?) `)
+                        placeholders.push(` (${fieldStr} <> ?) `)
                         break;
                     case "startsWith":
                         params.push(`${filterOptions[key]}%`)
-                        placeholders.push(` (${field} LIKE ?) `)
+                        placeholders.push(` (${fieldStr} LIKE ?) `)
                         break;
                     case "endsWith":
                         params.push(`%${filterOptions[key]}`)
-                        placeholders.push(` (${field} LIKE ?) `)
+                        placeholders.push(` (${fieldStr} LIKE ?) `)
                         break;
                     case "contains":
                         params.push(`%${filterOptions[key]}%`)
-                        placeholders.push(` (${field} LIKE ?) `)
+                        placeholders.push(` (${fieldStr} LIKE ?) `)
                         break;
                     case "between":
                         let range = filterOptions[key].split(";")
                         if (range.length === 2) {
                             let [from, to] = range
-                            placeholders.push(`( ${field} BETWEEN ? `)
+                            placeholders.push(`( ${fieldStr} BETWEEN ? `)
                             params.push(from)
                             placeholders.push(` AND ? ) `)
                             params.push(to)
@@ -83,7 +84,7 @@ function parseRequestQueries(query, allowedFilterFields = []) {
                     case "in":
                         let options = filterOptions[key].split(";")
                         if (options.length >= 1) {
-                            placeholders.push(` (${field} IN (${options.map(item => "?").join(",")})) `)
+                            placeholders.push(` (${fieldStr} IN (${options.map(item => "?").join(",")})) `)
                             params.push(...options)
                         }
                         break;

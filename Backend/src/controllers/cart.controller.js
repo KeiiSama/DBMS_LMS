@@ -27,12 +27,12 @@ exports.addItemToCart= async (req, res, next) => {
     }
     const MaSoTaiKhoan = req.params["masotk"]
     console.log(MaSoTaiKhoan)
-    const { MaSoSach, SoLuong } = req.body;
-    cartModel.addItemToCart({ MaSoTaiKhoan, MaSoSach, SoLuong }, (error, result) => {
+    const { MaSoSach } = req.body;
+    cartModel.addItemToCart({ MaSoTaiKhoan, MaSoSach }, (error, result) => {
         if (result) {
             res.status(200).send(result);
         } else if (error) {
-            // console.log(error)
+            console.log(error)
             res.status(500).json({ message: "Insert Item to cart faild!" })
         }
     });
@@ -55,12 +55,14 @@ exports.updateCartItem= async (req, res, next) => {
 exports.deleteCartItem= async (req, res, next) => {
     const MaSoTaiKhoan = req.params["masotk"]
     const MaSoSach = req.params["MaSoSach"]
+    
+    console.log(MaSoTaiKhoan, MaSoSach)
     cartModel.deleteCartItem(MaSoTaiKhoan, MaSoSach,  (error, result) => {
         if (result) {
             res.status(200).send(result);
         } else if (error) {
             console.log(error)
-            res.status(500).json({ message: "Delete Usersfaild!" })
+            res.status(500).json({ message: "Delete faild!" })
         };
     })
 };

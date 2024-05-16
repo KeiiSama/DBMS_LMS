@@ -27,7 +27,8 @@ exports.login = (req, res) => {
     } else {
       if (results.length > 0) {
         // Authentication successful
-        res.status(200).json({ message: "Đăng nhập thành công" });
+        const {TenTaiKhoan, MaSoTaiKhoan, VaiTro} =  results[0]
+        res.status(200).json({ message: "Đăng nhập thành công", user: {id: MaSoTaiKhoan, username: TenTaiKhoan, role: VaiTro} });
       } else {
         // Authentication failed
         res

@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import FoodLogo from "./Images/logo.png";
 import { FaCartShopping } from "react-icons/fa6";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { FaDeleteLeft } from "react-icons/fa6";
 import "./Navbar.css";
 
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
-import { MyContext } from "./Context/CounterContext";
+import { CountContext, MyContext } from "./Context/CounterContext";
 import { useAuth0 } from "@auth0/auth0-react";
-import { toast } from "react-toastify";
 import { FaRegUser } from "react-icons/fa";
 
 import { useAuth } from "../AuthContext";
+import { Button } from "antd";
 const Navbar = () => {
   const [mnav, setMnav] = useState(false);
-  const { cartCounter } = MyContext();
+  const { cartCounter } = useContext(CountContext);
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
   const navigate = useNavigate();
   const { handleLogout, isAdmin, userInfo, loggedIn } = useAuth();
@@ -75,7 +75,7 @@ const Navbar = () => {
               />
 
               <div>
-                <FaCartShopping className="CartIcon mt-3" />
+                <Link to={"/carts"}><FaCartShopping className="CartIcon mt-3" /></Link>
                 <span className="cartCounter">{cartCounter}</span>
               </div>
             </ul>
@@ -114,7 +114,7 @@ const Navbar = () => {
                 Our Food
               </NavLink>
             </li>
-            <FaCartShopping className="MobileCartIcon mt-4" />
+            <Link to={"/carts"}><FaCartShopping className="MobileCartIcon mt-4" /></Link>
             <button
               className="btn btn-dark mt-4 loginBtn"
               onClick={() => loginWithRedirect()}

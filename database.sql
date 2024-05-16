@@ -404,10 +404,6 @@ CALL insertSach('Phụ nữ Việt Nam', 'Hội liên hiệp phụ nữ Việt N
 CALL insertSach('Học đàn piano', 'Brad Hill', 'Nhà Xuất Bản Hồng Đức', 5, 'HoatDong', 'Am Nhac','https://salt.tikicdn.com/cache/750x750/ts/product/7f/a6/b8/b0c80a5ffcea8221675b51f284984242.jpg.webp',' Cuốn sách trình bày chi tiết lịch sử ra đời của đàn Piano, cách phân biệt vạch nhịp, số nhịp, đếm nhịp, cách tập đàn một tay và hai tay. Sau mỗi bài học , sách còn đính kèm những bài luyện tập thiết thực dành cho những học viên không có thời giờ đến các trung tâm dạy nhạc. Có cuốn sách học đàn Piano bên cạnh , bạn có thể yên tâm tự học và tự tin trình diễn những bản nhạc từ đơn giản đến phức tạp của đàn Piano hay bất cứ loại nhạc cụ có bàn phím nào khác .');
 CALL insertSach('Kỹ thuật ghi âm', 'Phạm Xuân Ánh', 'Nhà Xuất Bản Dân Trí', 3, 'HoatDong', 'Am Nhac','https://salt.tikicdn.com/cache/750x750/ts/product/a4/41/74/bbe211b122a909154f402e361deab6ba.jpg.webp','Ngày nay, thế giới có rất nhiều sách và tài liệu trong lĩnh vực xử lý âm thanh và âm nhạc, mỗi cuốn sách đều có những khía cạnh riêng và đem lại những giá trị khác nhau. Thế nhưng ở Việt Nam lại chưa từng có một tài liệu cụ thể hay thống nhất nào về lĩnh vực này. Một số cuốn sách nổi tiếng trên thế giới chủ yếu cung cấp kiến thức dựa trên âm thanh của nhạc cụ, trong khi những cuốn sách của các nghệ sĩ trẻ lại mang những kiến thức mới trên nền xử lý âm thanh hiện đại.');
 
-INSERT INTO DonMuonSach (MaDonMuon, NgayTaoDon, NgayQuyetDinh, NgayTraSach, Gia, TinhTrangThanhToan, MaSoDocGia)
-VALUES
-('DH004', '2024-02-01', '2024-02-02', '2024-02-10', 50.00, 'Thanh Cong', 'TK0001');
-
 INSERT INTO SachMuon (MaDonMuonSach, MaSoSach, SoLuong)
 VALUES
 ('DH004', 'S001', 5);
@@ -455,13 +451,13 @@ BEGIN
 	DECLARE num_items INT;
 	DECLARE tong_so_luong  INT ;
 	DECLARE gia_tien DECIMAL(10,2) ;  
-	DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-		ROLLBACK;
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error occurred during transaction';
-	END;
+	-- DECLARE EXIT HANDLER FOR SQLEXCEPTION
+--     BEGIN
+-- 		ROLLBACK;
+-- 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error occurred during transaction';
+-- 	END;
 
-	START TRANSACTION;
+-- 	START TRANSACTION;
 		SELECT COALESCE(MAX(CAST(SUBSTRING(MaDonMuon, 3, LENGTH(MaDonMuon) - 2) AS SIGNED)), 0) + 1
 		INTO nextID
 		FROM DonMuonSach;
@@ -488,14 +484,15 @@ BEGIN
         SET gia_tien = TinhGiaTien(curdate(), p_NgayTraSach, tong_so_luong) ;
 		UPDATE DonMuonSach 
 		SET Gia = gia_tien
-		WHERE MaDonMuon = new_MaDonMuon;
+		WHERE MaDonMuon = new_MaDonMuon ;
         
-        
-     COMMIT;
+     -- COMMIT;
 END //
 DELIMITER ;
 
-CALL insertDonMuonSach('2024-04-29', 'TK0001', '[{"MaSoSach": "S001", "SoLuong": 100 }]');
+select *  from donmuonsach;
+
+CALL insertDonMuonSach('2024-05-29', 'TK0001', '[{"MaSoSach": "S001", "SoLuong": 2 }]');
 
 DROP PROCEDURE IF EXISTS ThemSachVaoGioHang;
  DELIMITER //
@@ -526,13 +523,10 @@ BEGIN
 			INSERT INTO SachtrongGioHang(MaSoSach, MaSoDocGia, SoLuong) 
 			VALUES(p_MaSoSach, p_MaSoDocGia, p_SoLuong) ;
 		END IF;
+        
+        SELECT COUNT(*) as total_cart_items  from SachTrongGioHang s where s.MaSoDocGia = p_MaSoDocGia ;
     COMMIT ;
 END //
 DELIMITER ;
 
-SELECT * FROM DonMuonSach;
-CALL ThemSachVaoGioHang("TK0001", "S001", 100) ;
 
-
-
-Select * from SachTrongGioHang stgh JOIN Sach s On stgh.MaSoSach = s.MaSoSach  Where MaSoDocGia = "TK0001" ;

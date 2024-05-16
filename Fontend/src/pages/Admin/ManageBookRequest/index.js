@@ -6,12 +6,44 @@ import { FaEdit, FaTrash, FaTrashRestore, FaTrashRestoreAlt } from "react-icons/
 import { MdRestore } from "react-icons/md";
 import { BookDetailModal } from "../../../Components/Modals/BookDetailsModal";
 import axios from "axios";
-import { GrClose } from "react-icons/gr";
-import { BsCheck } from "react-icons/bs";
+import { GrCheckmark, GrClose } from "react-icons/gr";
+import { BsCheck, BsCheckLg, BsEye } from "react-icons/bs";
+import moment from "moment";
+import { toast } from "react-toastify";
+import { BorrowRequestDetailsModal } from "../../../Components/Modals/BorrowRequestDetailModal";
 
 function ManageBorrowRequestPage() {
     const [selectedRows, setSelectedRows] = useState([])
     const [reloadData, setReloadData] = useState(false)
+    const [loading, setLoading] = useState(false)
+
+
+    const UpdateStatus = async (status, id) => {
+        setLoading(false)
+        try {
+            const result = await axios({
+                method: "PATCH",
+                url: `http://localhost:3001/api/borrow-requests/${id}/${status}`
+            })
+            setLoading(false)
+            setReloadData(!reloadData)
+        } catch (error) {
+            setLoading(false)
+            console.log(error)
+        }
+
+    }
+
+    const handleReject = (id) => {
+        UpdateStatus("reject", id)
+    }
+
+
+    const handleAccept = (id) => {
+        UpdateStatus("accept", id)
+    }
+
+
     const columns = [
         {
             title: "Mã đơn",
@@ -22,11 +54,13 @@ function ManageBorrowRequestPage() {
             title: "Ngày tạo đơn",
             dataIndex: "NgayTaoDon",
             key: "NgayTaoDon",
+            render: (text) => moment(text).format("YYYY-MM-DD")
         },
         {
             title: "Ngày cập nhật trạng thái",
-            dataIndex: "NgayQuyetDinh",
-            key: "NgayQuyetDinh",
+            dataIndex: "NgayCapNhat",
+            key: "NgayCapNhat",
+            render: (text) => text ? moment(text).format("YYYY-MM-DD hh:mm") : 'Chưa cập nhật'
         },
         {
             title: "Trạng Thái",
@@ -38,6 +72,7 @@ function ManageBorrowRequestPage() {
             title: "Ngày trả",
             dataIndex: "NgayTraSach",
             key: "NgayTraSach",
+            render: (text) => moment(text).format("YYYY-MM-DD")
         },
         {
             title: "Giá",
@@ -51,13 +86,21 @@ function ManageBorrowRequestPage() {
             render: (text, row, record) => (
                 <div className="d-flex gap-4">
                     <Space>
-                        <Popconfirm title="Bạn có chắc muốn xóa sách này?" onConfirm={() => {}}>
-                            <Button danger icon={<GrClose />} size="small">Từ chối</Button>
-                        </Popconfirm>
+                        <BorrowRequestDetailsModal borrowRequest={row} />
+                        {row.TrangThai === "DangCho" &&
+                            <>
+                                <Tooltip title="Từ chối">
+                                    <Popconfirm title="Bạn có chắc muốn từ chối đơn yêu cầu mượn sách này?" onConfirm={() => { handleReject(row.MaDonMuon) }}>
+                                        <Button danger icon={<GrClose />} size="small" />
+                                    </Popconfirm>
+                                </Tooltip>
 
-                        <Popconfirm title="Bạn có chắc muốn xóa sách này?" onConfirm={() => {}}>
-                            <Button type='primary' size="small" icon={<BsCheck />}>Chấp nhận</Button>
-                        </Popconfirm>
+                                <Tooltip title="Chấp nhận">
+                                    <Popconfirm title="Bạn có chắc muốn chấp nhận đơn yêu cầu mượn sách này?" onConfirm={() => { handleAccept(row.MaDonMuon) }}>
+                                        <Button type='primary' size="small" icon={<GrCheckmark />} />
+                                    </Popconfirm>
+                                </Tooltip>
+                            </>}
                     </Space>
                 </div >
             ),
@@ -110,6 +153,7 @@ function ManageBorrowRequestPage() {
     //     handle: (selecteds) => setSelectedRows(selecteds),
     //     render: () => <p>Selected </p>
     // }
+
 
 
     return (<>

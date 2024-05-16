@@ -46,16 +46,27 @@ exports.createNewBorrowRequest= async (req, res, next) => {
     });
 };
 
-exports.updateBorrowRequestStatus = async (req, res, next) => {
-    const MaSoTaiKhoan = req.params["id"];
-    const { TrangThai } = req.body
-
-    borrowRequestModel.update(MaSoTaiKhoan, TrangThai, (error, result) => {
+exports.rejectBorrowRequest = async (req, res, next) => {
+    const  MaDonMuon = req.params["MaDonMuon"]
+    borrowRequestModel.reject(MaDonMuon, (error, result) => {
         if (result) {
             res.status(200).send(result);
         } else if (error) {
             console.log(error)
-            res.status(500).json({ message: "Update BorrowRequests faild!", error: error })
+            res.status(500).json({ message: "Đã từ chối đơn mượn", error: error })
+        }
+    });
+}
+
+
+exports.acceptBorrowRequest = async (req, res, next) => {
+    const  MaDonMuon = req.params["MaDonMuon"]
+    borrowRequestModel.accept(MaDonMuon, (error, result) => {
+        if (result) {
+            res.status(200).send(result);
+        } else if (error) {
+            console.log(error)
+            res.status(500).json({ message: "Đã duyệt đơn mượn", error: error })
         }
     });
 }

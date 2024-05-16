@@ -36,12 +36,17 @@ function LoginForm() {
   const onClickregister = () => {
     navigate("/Register");
   };
-  const handleLoginRequest = async (apiEndpoint, isAdmin) => {
+  const handleLoginRequest = async (apiEndpoint) => {
+    
     try {
+      console.log(formData)
       const response = await axios.post(apiEndpoint, formData);
+
       console.log(response.data);
       if (response.status === 200) {
-        handleLogin(formData, isAdmin);
+        const userInfo = response.data.user ;
+        const isAdmin = userInfo.role === "Admin"
+        handleLogin(response.data.user, userInfo.role === "Admin");
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("isAdmin", isAdmin ? "true" : "false");
         toast.success("Đăng nhập thành công.");
@@ -61,9 +66,9 @@ function LoginForm() {
     e.preventDefault();
     const isAdmin = document.getElementById("isAdmin").checked;
     if (isAdmin) {
-      handleLoginRequest("http://localhost:3001/api/Adminlogin", true);
+      handleLoginRequest("http://localhost:3001/api/Adminlogin");
     } else {
-      handleLoginRequest("http://localhost:3001/api/login", false);
+      handleLoginRequest("http://localhost:3001/api/login");
     }
   };
 
